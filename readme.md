@@ -93,3 +93,7 @@ State:
      Unprocessed Messages: 0
             Waiting Pulls: 0 of maximum 512
 ```
+
+## NATS.io docs
+
+Java client - see [here](https://github.com/nats-io/nats.java)

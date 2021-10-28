@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
 
 public class QuotesProducer {
     static Logger LOG = LoggerFactory.getLogger(QuotesProducer.class);
@@ -34,8 +35,8 @@ public class QuotesProducer {
 
         for(;;) {
             count++;
-            if(count % 1 == 0) {
-                LOG.info("count is {}", count);
+            if(count % 1000 == 0) {
+                //LOG.info("count is {}", count);
                 long stopTime = System.currentTimeMillis();
                 LOG.info("Publishing at {} quotes/sec", count * 1000.0 / (stopTime - startTime));
                 startTime = stopTime;
@@ -50,8 +51,15 @@ public class QuotesProducer {
                     .data(randoPrice)
                     .build();
 
-            PublishAck pa = js.publish(msg);
-            nc.publish(subject, randoPrice);
+            //PublishAck pa = js.publish(msg);
+
+            CompletableFuture<PublishAck> f = js.publishAsync(msg);
+            f.whenComplete((ack,t)-> {
+                if(t != null) {
+                    t.printStackTrace();
+                }
+              //LOG.info("ack is {} t is {}", ack != null ? ack.toString() : ack, t == null ? "" : t.getMessage());
+            });
         }
     }
 }
