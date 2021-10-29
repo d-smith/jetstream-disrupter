@@ -1,31 +1,14 @@
 package org.ds.jslmax.consumers;
 
 import io.nats.client.*;
+import io.nats.client.api.ConsumerConfiguration;
+import io.nats.client.api.DeliverPolicy;
+import org.ds.jslmax.counters.ConsumerCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class QuotesPushConsumer {
     static Logger LOG = LoggerFactory.getLogger(QuotesPushConsumer.class);
-
-    public static class ConsumerCounter {
-        private AtomicInteger count;
-        private long epoch;
-
-        public ConsumerCounter() {
-            count = new AtomicInteger();
-            epoch = System.currentTimeMillis();
-        }
-
-        public void count() {
-            int current = count.incrementAndGet();
-            if(current % 10000 == 0) {
-                long now = System.currentTimeMillis();
-                LOG.info("{} consumed in {} ms - {} per second", current, now, (1000.0 * current)/(now - epoch));
-            }
-        }
-    }
 
     public static void main(String... args) throws Exception {
 
@@ -49,7 +32,16 @@ public class QuotesPushConsumer {
 
         boolean autoAck = true;
 
-        js.subscribe("quotes.>", dispatcher, handler, autoAck);
+        PushSubscribeOptions po = PushSubscribeOptions.builder()
+                .configuration(
+                        ConsumerConfiguration.builder()
+                                .deliverPolicy(DeliverPolicy.New)
+                                .build()
+                )
+                .build();
+
+
+        js.subscribe("quotes.>", dispatcher, handler, autoAck, po);
 
 
     }

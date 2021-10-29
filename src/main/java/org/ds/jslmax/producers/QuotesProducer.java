@@ -30,7 +30,7 @@ public class QuotesProducer {
             int current = count.incrementAndGet();
             if(current % 10000 == 0) {
                 long now = System.currentTimeMillis();
-                LOG.info("{} published in {} ms - {} per second", current, now, (1000.0 * current)/(now - epoch));
+                LOG.info("{} published in {} ms - {} per second", current, now - epoch, (1000.0 * current)/(now - epoch));
             }
         }
     }
@@ -51,7 +51,7 @@ public class QuotesProducer {
                 int current = count.incrementAndGet();
                 if(current % 10000 == 0) {
                     long now = System.currentTimeMillis();
-                    LOG.info("{} publish futures completed is {} ms - {} per second", current, now, (1000.0 * current)/(now - epoch));
+                    LOG.info("{} publish futures completed is {} ms - {} per second", current, now - epoch, (1000.0 * current)/(now - epoch));
                 }
             } else if (throwable != null) {
                 int errors = errorCount.incrementAndGet();
@@ -80,7 +80,7 @@ public class QuotesProducer {
         CompletionCounter completionCounter = new CompletionCounter();
         PublishCounter pc = new PublishCounter();
 
-        for(int i = 0; i < Integer.MAX_VALUE / 512; i++) {
+        for(int i = 0; i < 1000000; i++) {
             /*
             count++;
             if(count % 1000 == 0) {
@@ -119,7 +119,6 @@ public class QuotesProducer {
             });
 
              */
-
 
         }
     }
