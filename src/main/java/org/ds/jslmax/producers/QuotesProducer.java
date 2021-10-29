@@ -37,7 +37,7 @@ public class QuotesProducer {
         CompletionCounter completionCounter = new CompletionCounter();
         PublishCounter pc = new PublishCounter();
 
-        for(int i = 0; i < 1000000; i++) {
+        for(;;) {
             int idx = (int) (Math.random() * subjects.length);
             String subject = subjects[idx];
             byte[] randoPrice = String.valueOf((Math.random() * 600)).getBytes(StandardCharsets.UTF_8);
@@ -52,7 +52,7 @@ public class QuotesProducer {
             f.whenComplete((ack,t)-> {
                 completionCounter.count(ack,t);
             });
-
+            Thread.sleep(10);
         }
     }
 }

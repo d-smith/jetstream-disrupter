@@ -25,7 +25,17 @@ Create a quotes stream:
 nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=memory --subjects=quotes.* QUOTES
 ```
 
+Create a positions stream
 
+```
+nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=memory --subjects=positions POSITIONS
+```
+
+Create a market value stream
+
+```
+nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=memory --subjects=mvupdates MVSTR
+```
 
 
 ## NATS.io docs
