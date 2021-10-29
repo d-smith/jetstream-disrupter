@@ -6,6 +6,7 @@ import io.nats.client.Message;
 import io.nats.client.Nats;
 import io.nats.client.api.PublishAck;
 import io.nats.client.impl.NatsMessage;
+import org.ds.jslmax.counters.CompletionCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,31 +32,6 @@ public class QuotesProducer {
             if(current % 10000 == 0) {
                 long now = System.currentTimeMillis();
                 LOG.info("{} published in {} ms - {} per second", current, now - epoch, (1000.0 * current)/(now - epoch));
-            }
-        }
-    }
-
-    public static class CompletionCounter  {
-        private AtomicInteger count;
-        private AtomicInteger errorCount;
-        private long epoch;
-
-        public CompletionCounter() {
-            count = new AtomicInteger();
-            errorCount = new AtomicInteger();
-            epoch = System.currentTimeMillis();
-        }
-
-        public void count(PublishAck publishAck, Throwable throwable) {
-            if(publishAck != null) {
-                int current = count.incrementAndGet();
-                if(current % 10000 == 0) {
-                    long now = System.currentTimeMillis();
-                    LOG.info("{} publish futures completed is {} ms - {} per second", current, now - epoch, (1000.0 * current)/(now - epoch));
-                }
-            } else if (throwable != null) {
-                int errors = errorCount.incrementAndGet();
-                LOG.info("error {} total errors {}", throwable.getMessage(), errors);
             }
         }
     }
