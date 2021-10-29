@@ -7,6 +7,7 @@ import io.nats.client.Nats;
 import io.nats.client.api.PublishAck;
 import io.nats.client.impl.NatsMessage;
 import org.ds.jslmax.counters.CompletionCounter;
+import org.ds.jslmax.counters.PublishCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,24 +18,6 @@ import java.util.function.BiConsumer;
 
 public class QuotesProducer {
     static Logger LOG = LoggerFactory.getLogger(QuotesProducer.class);
-
-    public static class PublishCounter {
-        private AtomicInteger count;
-        private long epoch;
-
-        public PublishCounter() {
-            count = new AtomicInteger();
-            epoch = System.currentTimeMillis();
-        }
-
-        public void count() {
-            int current = count.incrementAndGet();
-            if(current % 10000 == 0) {
-                long now = System.currentTimeMillis();
-                LOG.info("{} published in {} ms - {} per second", current, now - epoch, (1000.0 * current)/(now - epoch));
-            }
-        }
-    }
 
     public static void main(String... args) throws Exception {
 
