@@ -40,7 +40,5 @@ public class QuotesPullConsumer {
                 counter.count();
             }
         }
-
-
     }
 }

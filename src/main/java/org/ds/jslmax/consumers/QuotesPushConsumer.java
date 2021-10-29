@@ -17,13 +17,6 @@ public class QuotesPushConsumer {
         JetStream js = nc.jetStream();
         LOG.info("Jetstream!");
 
-        /*
-        PullSubscribeOptions pullOptions = PullSubscribeOptions.builder()
-                .durable("quotes-consumer")
-                .build();
-
-        JetStreamSubscription sub = js.subscribe("quotes.*", pullOptions);
-         */
         ConsumerCounter counter = new ConsumerCounter();
         Dispatcher dispatcher = nc.createDispatcher();
         MessageHandler handler = (msg) -> {
@@ -39,7 +32,6 @@ public class QuotesPushConsumer {
                                 .build()
                 )
                 .build();
-
 
         js.subscribe("quotes.>", dispatcher, handler, autoAck, po);
 
