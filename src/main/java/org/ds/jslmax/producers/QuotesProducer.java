@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class QuotesProducer {
@@ -37,7 +39,12 @@ public class QuotesProducer {
         CompletionCounter completionCounter = new CompletionCounter();
         PublishCounter pc = new PublishCounter();
 
+        final int roundSize = 250; //publish this many before checking acks
+        int roundCount = 0;
+        List<CompletableFuture<PublishAck>> futures = new ArrayList<>();
+
         for(;;) {
+
             int idx = (int) (Math.random() * subjects.length);
             String subject = subjects[idx];
             byte[] randoPrice = String.valueOf((Math.random() * 600)).getBytes(StandardCharsets.UTF_8);
@@ -47,12 +54,34 @@ public class QuotesProducer {
                     .data(randoPrice)
                     .build();
 
-            CompletableFuture<PublishAck> f = js.publishAsync(msg);
             pc.count();
-            f.whenComplete((ack,t)-> {
-                completionCounter.count(ack,t);
-            });
-            Thread.sleep(10);
+            futures.add(js.publishAsync(msg));
+            roundCount++;
+
+            if(roundCount == roundSize) {
+                LOG.debug("check acks");
+                roundCount = 0;
+
+                while (futures.size() > 0) {
+                    List<CompletableFuture<PublishAck>> notDone = new ArrayList<>((int)roundSize);
+                    for (CompletableFuture<PublishAck> f : futures) {
+                        if (!f.isDone()) {
+                            notDone.add(f);
+                        }
+                        else if (f.isCompletedExceptionally()) {
+                            // handle the exception, either an io error or expectation error
+                        }
+                        else {
+                            // handle the completed ack
+                            PublishAck pa = f.get(); // this call blocks if it's not done, but we know it's done because we checked
+                        }
+                    }
+                    futures = notDone;
+                }
+                LOG.debug("check of acks complete");
+
+                Thread.sleep(15);
+            }
         }
     }
 }

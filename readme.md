@@ -22,19 +22,19 @@ nats context add local --description "Localhost" --select
 Create a quotes stream:
 
 ```
-nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=memory --subjects=quotes.* QUOTES
+nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=file --subjects="quotes.*" QUOTES
 ```
 
 Create a positions stream
 
 ```
-nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=memory --subjects=positions POSITIONS
+nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=file --subjects=positions POSITIONS
 ```
 
 Create a market value stream
 
 ```
-nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=memory --subjects=mvupdates MVSTR
+nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=file --subjects=mvupdates MVSTR
 ```
 
 
