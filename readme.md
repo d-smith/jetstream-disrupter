@@ -18,25 +18,35 @@ $ brew tap nats-io/nats-tools
 $ brew install nats-io/nats-tools/nats
 nats context add local --description "Localhost" --select
 ```
+### File backed streams
 
 Create a quotes stream:
 
 ```
-nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=file --subjects="quotes.*" QUOTES
+nats str create --discard=old --max-msgs=1000000 --retention=limits --storage=file --subjects="quotes.*" QUOTES
 ```
 
 Create a positions stream
 
 ```
-nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=file --subjects=positions POSITIONS
+nats str create --discard=old --max-msgs=100000 --retention=limits --storage=file --subjects=positions POSITIONS
 ```
 
 Create a market value stream
 
 ```
-nats str create --discard=old --max-msgs=10000000 --retention=limits --storage=file --subjects=mvupdates MVSTR
+nats str create --discard=old --max-msgs=1000000 --retention=limits --storage=file --subjects=mvupdates MVSTR
 ```
 
+### Memory backed streams
+
+```
+nats str create --discard=old --max-msgs=100000 --retention=limits --storage=memory --subjects="quotes.*" QUOTES
+
+nats str create --discard=old --max-msgs=100000 --retention=limits --storage=memory --subjects=positions POSITIONS
+
+nats str create --discard=old --max-msgs=100000 --retention=limits --storage=memory --subjects=mvupdates MVSTR
+```
 
 ## NATS.io docs
 
