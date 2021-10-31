@@ -5,22 +5,28 @@ import org.ds.jslmax.producers.QuotesProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CompletionCounter {
     private AtomicInteger count;
     private AtomicInteger errorCount;
     private long epoch;
+    private AtomicBoolean firstCall;
 
     private Logger LOG = LoggerFactory.getLogger(CompletionCounter.class);
 
     public CompletionCounter() {
         count = new AtomicInteger();
         errorCount = new AtomicInteger();
-        epoch = System.currentTimeMillis();
+        epoch = -1;
+        firstCall = new AtomicBoolean(false);
     }
 
     public void count(PublishAck publishAck, Throwable throwable) {
+        if(firstCall.getAndSet(true) == false) {
+            epoch = System.currentTimeMillis();
+        }
         if(publishAck != null) {
             int current = count.incrementAndGet();
             if(current % 10000 == 0) {
