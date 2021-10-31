@@ -4,14 +4,18 @@ Combine the forces of NAT.io Jetstream and lmax distruptor
 
 ## Set Up
 
-Running jetstream server:
+1. Running jetstream server:
 
 ```
 docker run --name nats-main -p 4222:4222 nats -js
 docker run --network host -p 4222:4222 nats -js
 ```
 
-Run jetstream utilities
+2. Create the streams using org.ds.jslmax.setup.StreamSetup
+
+
+
+Alternatively, the set up can be done using the  jetstream utilities
 
 ```
 $ brew tap nats-io/nats-tools
