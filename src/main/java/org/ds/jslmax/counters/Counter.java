@@ -30,6 +30,8 @@ public class Counter {
         if (current % 10000 == 0) {
             long now = System.currentTimeMillis();
             LOG.info(logFormatStr, current, now - epoch, (1000.0 * current) / (now - epoch));
+            count.set(0);
+            epoch = System.currentTimeMillis();
         }
     }
 }
