@@ -35,9 +35,10 @@ public class QuotesPullConsumer {
         ConsumerCounter counter = new ConsumerCounter();
 
         for(;;) {
-            List<Message> messages = sub.fetch(25, Duration.ofMillis(100));
+            List<Message> messages = sub.fetch(250, Duration.ofMillis(100));
             for(Message m: messages) {
                 counter.count();
+                m.ack();
             }
         }
     }

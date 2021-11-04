@@ -19,6 +19,7 @@ public class MarketValuesUpdatesPushConsumer {
         ConsumerCounter counter = new ConsumerCounter();
         Dispatcher dispatcher = nc.createDispatcher();
         MessageHandler handler = (msg) -> {
+            LOG.info(msg.toString());
             counter.count();
         };
 
